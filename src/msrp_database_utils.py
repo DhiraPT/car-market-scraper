@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+from zoneinfo import ZoneInfo
 from supabase import Client
 
 from classes.model import Model
@@ -21,7 +22,7 @@ def get_submodels_in_database(db: Client) -> List[dict]:
 
 
 def write_msrp_database(db: Client, data: List[Model], updated_at: datetime) -> None:
-    print(f"Writing MSRP data to database")
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Writing MSRP data to database")
     existing_models = get_models_in_database(db)
     existing_submodels = get_submodels_in_database(db)
     for model in data:
@@ -35,8 +36,8 @@ def write_msrp_database(db: Client, data: List[Model], updated_at: datetime) -> 
         'updated_at': updated_at.isoformat()
     }).execute()
     get_logger().info(f'LastUpdates updated: data_title=MSRP, updated_at={updated_at.isoformat()}')
-    
-    print(f"MSRP data written to database")
+
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - MSRP data written to database")
 
 
 def insert_car_model(db: Client, model: Model, existing_models: List[dict]) -> None:
@@ -79,4 +80,4 @@ def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
             'date': date.isoformat(),
             'price': price
         }).execute()
-        get_logger().info(f'New price inserted: submodel_id={submodel.subcode}, date={date.isoformat()}, price={price}')
+        get_logger().info(f'New price inserted: submodel_id={submodel.subcode}, date={date.strftime("%Y-%m-%d")}, price={price}')

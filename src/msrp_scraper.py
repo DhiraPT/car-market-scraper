@@ -3,6 +3,7 @@ from datetime import datetime
 import json
 import re
 from typing import List
+from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 import math
@@ -12,8 +13,8 @@ from classes.submodel import Submodel
 
 
 def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
-    start_time = datetime.now().astimezone()
-    print(f"Scraping MSRP data from SGCarMart")
+    start_time = datetime.now().astimezone(tz=ZoneInfo('Asia/Singapore'))
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Scraping MSRP data from SGCarMart")
     # List to store the data
     data: List[Model] = []
 
@@ -64,7 +65,7 @@ def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
             else:
                 set_submodels_price_history(model, script_tag_text)
 
-    print(f"Scraped MSRP data")
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Scraped MSRP data")
     return data, start_time
 
 

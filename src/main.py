@@ -1,6 +1,7 @@
 from datetime import datetime
 import logging
 import os
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -27,7 +28,7 @@ def main():
     supabase.auth.sign_in_with_password({"email": EMAIL, "password": PASSWORD})
 
     # Create a logger
-    filename = os.path.join('logs', datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log')
+    filename = os.path.join('logs', datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d_%H-%M-%S") + '.log')
     create_logger(filename)
 
     # Scrape and write to database

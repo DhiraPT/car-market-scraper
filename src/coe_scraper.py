@@ -1,11 +1,12 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
 
 def scrape_coe(url: str) -> tuple[pd.DataFrame, datetime]:
-    start_time = datetime.now().astimezone()
-    print(f"Scraping COE data from {url}")
+    start_time = datetime.now().astimezone(tz=ZoneInfo('Asia/Singapore'))
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Scraping COE data from {url}")
     df = pd.read_csv(url)
 
     df = df[['Announcement Date', 'Category', 'Quota Premium', 'Quota']]
@@ -14,5 +15,5 @@ def scrape_coe(url: str) -> tuple[pd.DataFrame, datetime]:
     df['Quota Premium'] = df['Quota Premium'].str.replace(',', '').str.replace('$', '').astype(int)
     df['Category'] = df['Category'].str[4]
 
-    print(f"Scraped {len(df)} COE data")
+    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Scraped {len(df)} COE data")
     return df, start_time
