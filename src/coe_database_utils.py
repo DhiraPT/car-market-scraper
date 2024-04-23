@@ -1,6 +1,4 @@
 from datetime import datetime
-from typing import List
-from zoneinfo import ZoneInfo
 import pandas as pd
 from supabase import Client
 
@@ -16,7 +14,7 @@ def get_coe_latest_date_in_database(db: Client) -> datetime | None:
 
 
 def write_coe_database(db: Client, df: pd.DataFrame, updated_at: datetime) -> None:
-    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - Writing COE data to database")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Writing COE data to database")
     latest_date = get_coe_latest_date_in_database(db)
     if latest_date is not None:
         df = df[df['Announcement Date'] > latest_date]
@@ -36,4 +34,4 @@ def write_coe_database(db: Client, df: pd.DataFrame, updated_at: datetime) -> No
     }).execute()
     get_logger().info(f'LastUpdates updated: data_title=COE, updated_at={updated_at.isoformat()}')
 
-    print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - COE data written to database")
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - COE data written to database")

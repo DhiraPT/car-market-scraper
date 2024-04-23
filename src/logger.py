@@ -1,12 +1,11 @@
 from datetime import datetime
 import logging
 import os
-from zoneinfo import ZoneInfo
 
 from supabase import Client
 
 
-def create_logger(filename: str = os.path.join('logs', datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d_%H-%M-%S") + '.log')) -> None:
+def create_logger(filename: str = os.path.join('logs', datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log')) -> None:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
@@ -14,7 +13,7 @@ def create_logger(filename: str = os.path.join('logs', datetime.now(ZoneInfo('As
         os.makedirs('logs')
     file_handler = logging.FileHandler(filename)
 
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S', tz=ZoneInfo("Asia/Singapore"))
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(formatter)
 
     logger.addHandler(file_handler)
