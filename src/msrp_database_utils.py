@@ -59,7 +59,7 @@ def insert_car_submodel(db: Client, model: Model, submodel: Submodel, existing_s
 
 
 def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
-    query_response = db.table('CarPrices').select('date').eq('submodel_id', submodel.subcode).order('date', ascending=False).limit(1).execute()
+    query_response = db.table('CarPrices').select('date').eq('submodel_id', submodel.subcode).order('date', desc=True).limit(1).execute()
     data = query_response['data']
     latest_date = None
     if len(data) > 0:

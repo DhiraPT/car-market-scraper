@@ -1,10 +1,11 @@
 from datetime import datetime
 import logging
+import os
 
 from supabase import Client
 
 
-def create_logger(filename: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'):
+def create_logger(filename: str = datetime.now().strftime("%Y-%m-%d_%H:%M:%S") + '.log'):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
@@ -21,8 +22,12 @@ def get_logger():
 
 
 def upload_log_file(db: Client, filename: str):
+    if os.path.getsize(filename) == 0:
+        print("There are no updates to the data.")
+        get_logger().info("There are no updates to the data.")
+
     with open(filename, 'rb') as file:
-        upload_response = db.storage.from_("logs").upload(file=filename, file_options={"content-type": "text/plain"})
+        upload_response = db.storage.from_("logs").upload(file=file, file_options={"content-type": "text/plain"})
     
     if upload_response['status'] == 201:
         print("Log file uploaded successfully to Supabase Storage.")

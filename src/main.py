@@ -44,7 +44,11 @@ def main():
     #     'data_title': 'COE',
     #     'updated_at': datetime.now().astimezone().isoformat()
     # }).execute()
+
+    # Upload log file to Supabase Storage
     upload_log_file(supabase, filename)
+
+    # Sign out from Supabase
     supabase.auth.sign_out()
 
 
