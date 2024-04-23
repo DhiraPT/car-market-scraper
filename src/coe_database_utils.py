@@ -7,7 +7,7 @@ from supabase import Client
 from logger import get_logger
 
 
-def get_coe_latest_date_in_database(db: Client) -> List[tuple[int, datetime]]:
+def get_coe_latest_date_in_database(db: Client) -> datetime | None:
     query_response = db.table('CoeBiddings').select('bidding_date').order('bidding_date', desc=True).limit(1).execute()
     data = query_response.data
     if len(data) == 0:
@@ -37,11 +37,3 @@ def write_coe_database(db: Client, df: pd.DataFrame, updated_at: datetime) -> No
     get_logger().info(f'LastUpdates updated: data_title=COE, updated_at={updated_at.isoformat()}')
 
     print(f"{datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d %H:%M:%S")} - COE data written to database")
-
-
-def get_coe_premium(db: Client, coe_type: str, date: datetime) -> int:
-    query_response = db.table('CoeBiddings').select('premium').eq('coe_type', coe_type).eq('bidding_date', date.isoformat()).execute()
-    data = query_response.data
-    if len(data) == 0:
-        return None
-    return data[0]['premium']

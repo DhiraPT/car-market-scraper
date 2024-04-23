@@ -7,7 +7,7 @@ class Submodel:
         self.submodel_name: str = submodel_name
         self.subcode: int = subcode
         self.coe_type: str | None = None
-        self.is_price_include_coe: bool = True
+        self.is_price_inclusive_of_coe: bool = True
         self.price_history: List[tuple[datetime, str]] = []
 
     def add_price_history(self, date_string: str, price: int) -> None:

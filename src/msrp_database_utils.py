@@ -5,7 +5,6 @@ from supabase import Client
 
 from classes.model import Model
 from classes.submodel import Submodel
-from coe_database_utils import get_coe_premium
 from logger import get_logger
 
 
@@ -73,11 +72,10 @@ def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
     for date, price in submodel.price_history:
         if latest_date != None and date <= latest_date:
             continue
-        if submodel.is_price_include_coe == False:
-            price += get_coe_premium(db, submodel.coe_type, date)
         db.table('CarPrices').insert({
             'submodel_id': submodel.subcode,
             'date': date.isoformat(),
-            'price': price
+            'price': price,
+            'is_coe_included': submodel.is_price_inclusive_of_coe
         }).execute()
-        get_logger().info(f'New price inserted: submodel_id={submodel.subcode}, date={date.strftime("%Y-%m-%d")}, price={price}')
+        get_logger().info(f'New price inserted: submodel_id={submodel.subcode}, date={date.strftime("%Y-%m-%d")}, price={price}, is_coe_included={submodel.is_price_inclusive_of_coe}')

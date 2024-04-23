@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 from supabase import Client
 
 
-def create_logger(filename: str = os.path.join('logs', datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d_%H-%M-%S") + '.log')):
+def create_logger(filename: str = os.path.join('logs', datetime.now(ZoneInfo('Asia/Singapore')).strftime("%Y-%m-%d_%H-%M-%S") + '.log')) -> None:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
@@ -20,11 +20,11 @@ def create_logger(filename: str = os.path.join('logs', datetime.now(ZoneInfo('As
     logger.addHandler(file_handler)
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     return logging.getLogger(__name__)
 
 
-def upload_log_file(db: Client, filename: str):
+def upload_log_file(db: Client, filename: str) -> None:
     if os.path.getsize(filename) == 0:
         print("There are no updates to the data.")
         get_logger().info("There are no updates to the data.")
