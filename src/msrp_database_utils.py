@@ -10,17 +10,18 @@ from logger import get_logger
 
 def get_models_in_database(db: Client) -> List[dict]:
     query_response = db.table('CarModels').select('model_id').execute()
-    data = query_response['data']
+    data = query_response.data
     return data
 
 
 def get_submodels_in_database(db: Client) -> List[dict]:
     query_response = db.table('CarSubmodels').select('submodel_id').execute()
-    data = query_response['data']
+    data = query_response.data
     return data
 
 
 def write_msrp_database(db: Client, data: List[Model], updated_at: datetime) -> None:
+    print(f"Writing MSRP data to database")
     existing_models = get_models_in_database(db)
     existing_submodels = get_submodels_in_database(db)
     for model in data:
@@ -34,6 +35,8 @@ def write_msrp_database(db: Client, data: List[Model], updated_at: datetime) -> 
         'updated_at': updated_at.isoformat()
     }).execute()
     get_logger().info(f'LastUpdates updated: data_title=MSRP, updated_at={updated_at.isoformat()}')
+    
+    print(f"MSRP data written to database")
 
 
 def insert_car_model(db: Client, model: Model, existing_models: List[dict]) -> None:
@@ -60,7 +63,7 @@ def insert_car_submodel(db: Client, model: Model, submodel: Submodel, existing_s
 
 def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
     query_response = db.table('CarPrices').select('date').eq('submodel_id', submodel.subcode).order('date', desc=True).limit(1).execute()
-    data = query_response['data']
+    data = query_response.data
     latest_date = None
     if len(data) > 0:
         latest_date = datetime.fromisoformat(data[0]['date'])

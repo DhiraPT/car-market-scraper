@@ -13,6 +13,7 @@ from classes.submodel import Submodel
 
 def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
     start_time = datetime.now().astimezone()
+    print(f"Scraping MSRP data from SGCarMart")
     # List to store the data
     data: List[Model] = []
 
@@ -63,6 +64,7 @@ def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
             else:
                 set_submodels_price_history(model, script_tag_text)
 
+    print(f"Scraped MSRP data")
     return data, start_time
 
 
