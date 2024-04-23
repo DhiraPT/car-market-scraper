@@ -155,6 +155,8 @@ def set_submodels_price_history(model: Model, script_tag_text: str) -> None:
             if j == 0:
                 date = prices_on_date[j]
             elif j % 2 == 1:
+                if prices_on_date[j] is None:
+                    continue
                 submodel_name = submodel_names[j//2]
                 for submodel in model.submodels:
                     if submodel.submodel_name == submodel_name:

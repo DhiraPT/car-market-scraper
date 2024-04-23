@@ -35,15 +35,6 @@ def main():
     write_coe_database(supabase, df, start_time_coe)
     data, start_time_msrp = scrape_msrp(MSRP_URL)
     write_msrp_database(supabase, data, start_time_msrp)
-    # supabase.table('CarPrices').insert({
-    #     'date': datetime.strptime('13-Jun-22', "%d-%b-%y").isoformat(),
-    #     'submodel_id': 9028,
-    #     'price': 100000
-    # }).execute()
-    # supabase.table('LastUpdates').insert({
-    #     'data_title': 'COE',
-    #     'updated_at': datetime.now().astimezone().isoformat()
-    # }).execute()
 
     # Upload log file to Supabase Storage
     upload_log_file(supabase, filename)
