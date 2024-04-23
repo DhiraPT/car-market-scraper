@@ -5,13 +5,13 @@ import os
 from supabase import Client
 
 
-def create_logger(filename: str = os.path.join('logs', datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log')) -> None:
+def create_logger(filename: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log') -> None:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
     if not os.path.exists('logs'):
         os.makedirs('logs')
-    file_handler = logging.FileHandler(filename)
+    file_handler = logging.FileHandler(os.path.join('logs', filename))
 
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(formatter)
@@ -24,14 +24,15 @@ def get_logger() -> logging.Logger:
 
 
 def upload_log_file(db: Client, filename: str) -> None:
-    if os.path.getsize(filename) == 0:
+    path = os.path.join('logs', filename)
+    if os.path.getsize(path) == 0:
         print("There are no updates to the data.")
         get_logger().info("There are no updates to the data.")
 
-    with open(filename, 'rb') as file:
-        upload_response = db.storage.from_("logs").upload(file=file, file_options={"content-type": "text/plain"})
+    with open(path, 'rb') as file:
+        upload_response = db.storage.from_('logs').upload(file=file, path=filename, file_options={"content-type": "text/plain"})
     
-    if upload_response['status'] == 201:
+    if upload_response.status_code == 200:
         print("Log file uploaded successfully to Supabase Storage.")
     else:
-        print("Failed to upload log file to Supabase Storage:", upload_response['error'])
+        print("Failed to upload log file to Supabase Storage.")

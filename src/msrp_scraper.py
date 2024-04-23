@@ -124,11 +124,11 @@ def set_submodels_coe_type(model: Model, soup: BeautifulSoup) -> None:
                 break
 
     for submodel in model.submodels:
-        submodel.is_price_include_coe = is_price_include_coe(soup)
+        submodel.is_price_inclusive_of_coe = is_price_inclusive_of_coe(soup)
 
 
 # Check if the price includes COE
-def is_price_include_coe(soup: BeautifulSoup) -> bool:
+def is_price_inclusive_of_coe(soup: BeautifulSoup) -> bool:
     span_tag = soup.find('span', class_='Newcars_Pricing_BigWord')
     if span_tag:
         parent_td_tag = span_tag.find_parent('td')

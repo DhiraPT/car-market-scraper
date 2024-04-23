@@ -26,7 +26,7 @@ def main():
     supabase.auth.sign_in_with_password({"email": EMAIL, "password": PASSWORD})
 
     # Create a logger
-    filename = os.path.join('logs', datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log')
+    filename = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
     create_logger(filename)
 
     # Scrape and write to database
