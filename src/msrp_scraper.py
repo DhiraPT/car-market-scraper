@@ -28,20 +28,17 @@ def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
 
         data.extend(get_models_in_page(soup))
 
-        # if total_pages > 1:
-        #     for page in range(1, total_pages):
-        #         next_url = url + '&BRSR=' + str(page * 60)
-        #         response = client.get(next_url)
-        #         soup = BeautifulSoup(response.content, 'html.parser')
-        #         data.append(get_models_in_page(soup))
+        if total_pages > 1:
+            for page in range(1, total_pages):
+                next_url = url + '&BRSR=' + str(page * 60)
+                response = client.get(next_url)
+                soup = BeautifulSoup(response.content, 'html.parser')
+                data.extend(get_models_in_page(soup))
 
     for model in data:
-        # if model.car_code != 21785:
-        #     continue
         pricing_info_url = f'https://www.sgcarmart.com/new_cars/newcars_pricing.php?CarCode={model.car_code}'
         response = client.get(pricing_info_url)
         if response.status_code == 200:
-            print(f"Getting price history for {model.model_name}")
             soup = BeautifulSoup(response.content, 'html.parser')
 
             set_submodels_coe_type(model, soup)
@@ -66,13 +63,6 @@ def scrape_msrp(url: str) -> tuple[List[Model], datetime]:
             else:
                 set_submodels_price_history(model, script_tag_text)
 
-        #     for submodel in model.submodels:
-        #         print(submodel.subcode)
-        #         print(submodel.submodel_name)
-        #         print(submodel.coe_type)
-        #         print(submodel.price_history)
-        #         print()
-        # break
     return data, start_time
 
 
@@ -90,8 +80,6 @@ def get_models_in_page(soup: BeautifulSoup) -> List[Model]:
             model_url = parent_a_tag.get('href')
             car_code = int(model_url.split('CarCode=')[-1])
             models_data.append(Model(model_name, car_code))
-            # print("Model name:", model_name)
-            # print("Car code:", car_code)
 
     set_submodels_in_page_to_models(soup, models_data)
 
@@ -131,6 +119,20 @@ def set_submodels_coe_type(model: Model, soup: BeautifulSoup) -> None:
             if submodel.subcode == subcodes[i]:
                 submodel.coe_type = coe_types[i]
                 break
+
+    for submodel in model.submodels:
+        submodel.is_price_include_coe = is_price_include_coe(soup)
+
+
+# Check if the price includes COE
+def is_price_include_coe(soup: BeautifulSoup) -> bool:
+    span_tag = soup.find('span', class_='Newcars_Pricing_BigWord')
+    if span_tag:
+        parent_td_tag = span_tag.find_parent('td')
+        if parent_td_tag:
+            if 'w/o COE' in parent_td_tag.get_text():
+                return False
+    return True
 
 
 # Set the price history of each submodel of the model

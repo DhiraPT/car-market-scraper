@@ -4,6 +4,8 @@ from supabase import Client
 
 from classes.model import Model
 from classes.submodel import Submodel
+from coe_database_utils import get_coe_premium
+from logger import get_logger
 
 
 def get_models_in_database(db: Client) -> List[dict]:
@@ -31,7 +33,7 @@ def write_msrp_database(db: Client, data: List[Model], updated_at: datetime) -> 
         'data_title': 'MSRP',
         'updated_at': updated_at.isoformat()
     }).execute()
-    print(f'LastUpdates updated: data_title=MSRP, updated_at={updated_at.isoformat()}')
+    get_logger().info(f'LastUpdates updated: data_title=MSRP, updated_at={updated_at.isoformat()}')
 
 
 def insert_car_model(db: Client, model: Model, existing_models: List[dict]) -> None:
@@ -41,7 +43,7 @@ def insert_car_model(db: Client, model: Model, existing_models: List[dict]) -> N
         'model_id': model.car_code,
         'model': model.model_name
     }).execute()
-    print(f'New model inserted: model_id={model.car_code}, model={model.model_name}')
+    get_logger().info(f'New model inserted: model_id={model.car_code}, model={model.model_name}')
 
 
 def insert_car_submodel(db: Client, model: Model, submodel: Submodel, existing_submodels: List[dict]) -> None:
@@ -53,7 +55,7 @@ def insert_car_submodel(db: Client, model: Model, submodel: Submodel, existing_s
         'submodel': submodel.submodel_name,
         'coe_type': submodel.coe_type,
     }).execute()
-    print(f'New submodel inserted: submodel_id={submodel.subcode}, submodel={submodel.submodel_name}, model_id={model.car_code}, coe_type={submodel.coe_type}')
+    get_logger().info(f'New submodel inserted: submodel_id={submodel.subcode}, submodel={submodel.submodel_name}, model_id={model.car_code}, coe_type={submodel.coe_type}')
 
 
 def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
@@ -67,9 +69,11 @@ def insert_car_submodel_prices(db: Client, submodel: Submodel) -> None:
     for date, price in submodel.price_history:
         if latest_date != None and date <= latest_date:
             continue
+        if submodel.is_price_include_coe == False:
+            price += get_coe_premium(db, submodel.coe_type, date)
         db.table('CarPrices').insert({
             'submodel_id': submodel.subcode,
             'date': date.isoformat(),
             'price': price
         }).execute()
-        print(f'New price inserted: submodel_id={submodel.subcode}, date={date.isoformat()}, price={price}')
+        get_logger().info(f'New price inserted: submodel_id={submodel.subcode}, date={date.isoformat()}, price={price}')
