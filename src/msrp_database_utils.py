@@ -43,9 +43,10 @@ def insert_car_model(db: Client, model: Model, existing_models: List[dict]) -> N
         return
     db.table('CarModels').insert({
         'model_id': model.car_code,
-        'model': model.model_name
+        'model': model.model_name,
+        'is_parallel_imported': model.is_parallel_imported
     }).execute()
-    get_logger().info(f'New model inserted: model_id={model.car_code}, model={model.model_name}')
+    get_logger().info(f'New model inserted: model_id={model.car_code}, model={model.model_name}, is_parallel_imported={model.is_parallel_imported}')
 
 
 def insert_car_submodel(db: Client, model: Model, submodel: Submodel, existing_submodels: List[dict]) -> None:

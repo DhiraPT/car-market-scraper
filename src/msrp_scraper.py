@@ -126,6 +126,16 @@ def set_submodels_coe_type(model: Model, soup: BeautifulSoup) -> None:
     for submodel in model.submodels:
         submodel.is_price_inclusive_of_coe = is_price_inclusive_of_coe(soup)
 
+    model.is_parallel_imported = is_model_parallel_imported(soup)
+
+
+# Check if the model is parallel imported
+def is_model_parallel_imported(soup: BeautifulSoup) -> bool:
+    string = soup.find(string='(Parallel Imported)')
+    if string:
+        return True
+    return False
+
 
 # Check if the price includes COE
 def is_price_inclusive_of_coe(soup: BeautifulSoup) -> bool:

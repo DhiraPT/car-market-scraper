@@ -10,7 +10,7 @@ def get_coe_latest_date_in_database(db: Client) -> datetime | None:
     data = query_response.data
     if len(data) == 0:
         return None
-    return datetime.fromisoformat(data[0]['date'])
+    return datetime.fromisoformat(data[0]['bidding_date'])
 
 
 def write_coe_database(db: Client, df: pd.DataFrame, updated_at: datetime) -> None:

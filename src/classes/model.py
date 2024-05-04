@@ -7,6 +7,7 @@ class Model:
         self.model_name: str = model_name
         self.car_code: int = car_code
         self.submodels: List[Submodel] = []
+        self.is_parallel_imported: bool = False
 
     def add_submodel(self, submodel: Submodel) -> None:
         self.submodels.append(submodel)
